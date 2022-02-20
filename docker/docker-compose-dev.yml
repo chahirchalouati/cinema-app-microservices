@@ -1,0 +1,66 @@
+version: '3.1'
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: strongPassword
+    networks:
+      - local_network
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "9000:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: strongPassword
+      ME_CONFIG_MONGODB_URL: mongodb://root:strongPassword@mongo:27017/
+    networks:
+      - local_network
+
+  mysql-db:
+    image: mysql:latest
+    restart: always
+    container_name: mysql-db
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
+    networks:
+      - local_network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - mysqldata:/var/lib/mysql/
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: docker-phpmyadmin
+    depends_on:
+      - mysql-db
+    links:
+      - mysql-db:mysql-db
+    ports:
+      - "9191:80"
+    expose:
+      - 9191
+    networks:
+      - local_network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=cinema
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - PMA_HOST=mysql-db
+volumes:
+  mysqldata:
+    driver: local
+
+networks:
+  local_network:
+    driver: bridge
