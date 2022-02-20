@@ -11,8 +11,8 @@ spring:
         service-id: config-server
     gateway:
       routes:
-      - id: movie
-        uri: lb://MOVIE-SERVICE
+      - id: files
+        uri: lb://FILE-SERVICE
         predicates:
           - Path=/movies/**
       - id: authorization

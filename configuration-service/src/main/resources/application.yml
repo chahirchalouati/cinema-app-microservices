@@ -8,6 +8,7 @@ spring:
           uri: https://github.com/chahirchalouati/movies-config.git
       discovery:
         service-id: config-server
+
 server:
   port: 8888
 
