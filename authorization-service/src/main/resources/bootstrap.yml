@@ -1,6 +1,9 @@
 server:
   port: 9191
 spring:
+  cloud:
+    config:
+      uri: lb://CONFIG-SERVICE
   data:
     mongodb:
       host: localhost
@@ -17,6 +20,9 @@ spring:
     name: auth-server
   main:
     allow-bean-definition-overriding: true
+  datasource:
+    tomcat:
+      propagate-interrupt-state:
 eureka:
   client:
     service-url:

@@ -6,5 +6,3 @@
 - notification-service
 - comment-service
 
-####Developers
-- Chahir Chalouati

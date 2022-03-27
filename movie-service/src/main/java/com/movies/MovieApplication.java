@@ -1,4 +1,4 @@
-package com.ahasan.sales;
+package com.movies;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,10 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 @SpringBootApplication
 @EnableEurekaClient
-public class FileStorageApplication {
+public class MovieApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(FileStorageApplication.class, args);
+        SpringApplication.run(MovieApplication.class, args);
     }
 
 }

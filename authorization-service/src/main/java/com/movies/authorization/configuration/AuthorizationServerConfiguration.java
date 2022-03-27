@@ -1,6 +1,5 @@
 package com.movies.authorization.configuration;
 
-import com.movies.authorization.services.impl.MongoClientDetailsService;
 import com.movies.authorization.services.impl.MongoClientDetailsServiceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,11 +27,10 @@ public class AuthorizationServerConfiguration implements AuthorizationServerConf
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private MongoClientDetailsService mongoClientDetailsService;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private BaseTokenEnhancer baseTokenEnhancer;
     @Bean
     public JwtTokenStore tokenStore() {
         return new JwtTokenStore(accessTokenConverter());
@@ -44,20 +42,10 @@ public class AuthorizationServerConfiguration implements AuthorizationServerConf
                 .checkTokenAccess("isAuthenticated()")
                 .passwordEncoder(passwordEncoder)
                 .allowFormAuthenticationForClients();
-
     }
 
     @Override
-    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-//        clients.inMemory()
-//                .withClient("client")
-//                .scopes("read","write")
-//                .authorizedGrantTypes("password","authorization_code","refresh_token","client_credentials")
-//                .accessTokenValiditySeconds(46000)
-//                .refreshTokenValiditySeconds(46000)
-//                .resourceIds("microservices")
-//                .autoApprove(true)
-//                .secret(passwordEncoder.encode("client-secret"));
+    public void configure(ClientDetailsServiceConfigurer clients) {
         final MongoClientDetailsServiceBuilder builder = new MongoClientDetailsServiceBuilder();
         builder.passwordEncoder(passwordEncoder);
         clients.setBuilder(builder);
@@ -67,6 +55,7 @@ public class AuthorizationServerConfiguration implements AuthorizationServerConf
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.tokenStore(tokenStore())
+                //.tokenEnhancer(baseTokenEnhancer)
                 .accessTokenConverter(accessTokenConverter())
                 .authenticationManager(authenticationManager)
                 .exceptionTranslator(loggingExceptionTranslator());
@@ -81,16 +70,20 @@ public class AuthorizationServerConfiguration implements AuthorizationServerConf
 
     @Bean
     public WebResponseExceptionTranslator<OAuth2Exception> loggingExceptionTranslator() {
-        return new DefaultWebResponseExceptionTranslator() {
-            @Override
-            public ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception {
-                e.printStackTrace();
-                ResponseEntity<OAuth2Exception> responseEntity = super.translate(e);
-                HttpHeaders headers = new HttpHeaders();
-                headers.setAll(responseEntity.getHeaders().toSingleValueMap());
-                OAuth2Exception excBody = responseEntity.getBody();
-                return new ResponseEntity<>(excBody, headers, responseEntity.getStatusCode());
-            }
-        };
+        return new BaseWebResponseExceptionTranslator();
     }
+
+    private static class BaseWebResponseExceptionTranslator extends DefaultWebResponseExceptionTranslator{
+        @Override
+        public ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception {
+            e.printStackTrace();
+            ResponseEntity<OAuth2Exception> responseEntity = super.translate(e);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAll(responseEntity.getHeaders().toSingleValueMap());
+            OAuth2Exception excBody = responseEntity.getBody();
+            return new ResponseEntity<>(excBody, headers, responseEntity.getStatusCode());
+        }
+    }
+
+
 }

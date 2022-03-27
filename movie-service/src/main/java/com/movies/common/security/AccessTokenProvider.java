@@ -1,4 +1,4 @@
-package com.ahasan.sales.common.security;
+package com.movies.common.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;

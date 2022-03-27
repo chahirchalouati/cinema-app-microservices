@@ -37,5 +37,6 @@ public class Client implements Serializable {
     private Integer accessTokenValiditySeconds = -1;
     private Integer refreshTokenValiditySeconds = -1;
     private boolean isAutoApprove = false;
+    private boolean isEnabled = true;
     private Map<String, Object> additionalInformation = new HashMap<>();
 }

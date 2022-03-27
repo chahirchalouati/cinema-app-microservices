@@ -1,7 +1,9 @@
 package com.movies.authorization.services.impl;
 
+import com.movies.authorization.domain.Client;
 import com.movies.authorization.repository.ClientRepository;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 /**
  * @author Chahir Chalouati
  */
+@Slf4j
 @Service
 @NoArgsConstructor
 @Primary
@@ -35,7 +38,7 @@ public class MongoClientDetailsService implements ClientDetailsService {
     private Map<String, ClientDetails> clientDetailsStore = new HashMap<>();
 
     public ClientDetails loadClientByClientId(final String clientId) throws ClientRegistrationException {
-        final var client = clientRepository.findByClientId(clientId)
+        final var client = clientRepository.findByClientIdAndIsEnabledIsTrue(clientId)
                 .orElseThrow(() -> new NoSuchClientException("No client with requested id: " + clientId));
         final var resourceIds = String.join(",", client.getResourceIds());
         final var scopes = String.join(",", client.getScope());
@@ -47,6 +50,7 @@ public class MongoClientDetailsService implements ClientDetailsService {
         clientDetails.setRefreshTokenValiditySeconds(client.getRefreshTokenValiditySeconds());
         clientDetails.setAdditionalInformation(client.getAdditionalInformation());
         clientDetails.setAutoApproveScopes(client.getScope());
+        log.info(String.format("%s#loadClientByClientId() called with: clientId = [%s]", this.getClass().getName(), clientId));
         return clientDetails;
     }
 

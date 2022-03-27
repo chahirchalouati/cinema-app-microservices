@@ -1,7 +1,8 @@
-package com.ahasan.sales.common.security;
+package com.movies.common.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 
@@ -19,7 +20,7 @@ public class AccessTokenProvider {
     }
 
     public static String provideToken() {
-        Optional<OAuth2AuthenticationDetails> currentOAuth2Details = currentOAuth2Details();
-        return currentOAuth2Details.get().getTokenValue();
+        final OAuth2AuthenticationDetails currentOAuth2Details = currentOAuth2Details().orElseThrow(() -> new OAuth2Exception("INVALID CLIENT"));
+        return currentOAuth2Details.getTokenValue();
     }
 }
