@@ -1,6 +1,5 @@
 package com.movies.authorization.services.impl;
 
-import com.movies.authorization.domain.Client;
 import com.movies.authorization.repository.ClientRepository;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -16,7 +16,7 @@
         <module>common</module>
         <module>configuration-service</module>
         <module>discovery-service</module>
-        <module>edge-service</module>
+        <module>gateway-service</module>
         <module>authorization-service</module>
         <module>file-storage-service</module>
         <module>movie-service</module>

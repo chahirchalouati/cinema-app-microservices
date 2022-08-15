@@ -1,6 +1,5 @@
 package com.movies.repository;
 
-import com.movies.domain.File;
 import com.movies.domain.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
